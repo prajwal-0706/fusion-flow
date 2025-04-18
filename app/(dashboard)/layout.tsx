@@ -1,3 +1,4 @@
+import BreadcrumbHeader from "@/components/globals/breadcrumb-header";
 import DesktopSidebar from "@/components/shared/sidebar";
 import { Separator } from "@/components/ui/separator";
 
@@ -7,7 +8,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <DesktopSidebar />
       <div className="flex flex-col flex-1 min-h-screen">
         <header className="flex items-center justify-between px-6 py-4 h-[50px] container">
-          FusionFlow
+          <BreadcrumbHeader />
         </header>
         <Separator />
         <div className="overflow-auto">

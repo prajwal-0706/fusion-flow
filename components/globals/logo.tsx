@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { SquareDashedMousePointer } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { SquareDashedMousePointer } from "lucide-react";
 
 export default function Logo({
   fontSize = "text-2xl",
