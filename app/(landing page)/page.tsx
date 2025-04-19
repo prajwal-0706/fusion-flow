@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { TYPEWRITER_WORDS } from "@/lib/constants";
+import FeatureGradient from "./_components/feature-gradient";
+import FeatureSection from "./_components/feature-section";
 
 export default function HomePage() {
   return (
@@ -23,7 +25,7 @@ export default function HomePage() {
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-        <SectionWrapper className="h-[50rem] text-center -mt-[10rem] relative z-20">
+        <SectionWrapper className="h-[100dvh] text-center -mt-[10rem] relative z-20">
           <TypewriterEffectSmooth
             className="mb-0 space-y-0"
             cursorClassName="bg-primary"
@@ -53,20 +55,21 @@ export default function HomePage() {
         </SectionWrapper>
       </div>
 
-      <div className="relative flex h-[50rem] w-full items-center justify-center bg-white dark:bg-black">
-        <div
-          className={cn(
-            "absolute inset-0",
-            "[background-size:20px_20px]",
-            "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
-            "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]"
-          )}
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
-        <p className="relative z-20 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">
-          Backgrounds
-        </p>
-      </div>
+      <SectionWrapper
+        id="howItWorks"
+        primaryTitle="How"
+        secondaryTitle="It Works"
+      >
+        <FeatureGradient />
+      </SectionWrapper>
+
+      <SectionWrapper
+        id="scrapingFeatures"
+        primaryTitle="Scraping"
+        secondaryTitle="Features"
+      >
+        <FeatureSection />
+      </SectionWrapper>
     </div>
   );
 }
@@ -93,7 +96,7 @@ function SectionWrapper({
       id={id}
     >
       <div className="text-2xl md:text-4xl lg:text-6xl text-foreground">
-        <span className="text-primary">{primaryTitle}</span>
+        <span className="text-primary">{primaryTitle}</span>&nbsp;
         <span className="">{secondaryTitle}</span>
       </div>
       {children}
