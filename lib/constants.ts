@@ -27,3 +27,47 @@ export const ROUTES = [
     icon: CoinsIcon,
   },
 ];
+
+export const HEADER_ROUTES = [
+  {
+    title: "How it works",
+    href: "#howItWorks",
+    className: "",
+  },
+  {
+    title: "Scraping Features",
+    href: "#scrapingFeatures",
+    className: "",
+  },
+  {
+    title: "Pricing",
+    href: "#pricing",
+    className: "",
+  },
+  {
+    title: "Get Started",
+    href: "/sign-in",
+    className: "",
+    button: true,
+  },
+];
+
+export const TYPEWRITER_WORDS = [
+  {
+    text: "Build",
+  },
+  {
+    text: "Powerful",
+  },
+  {
+    text: "Web",
+    className: "text-primary dark:text-primary",
+  },
+  {
+    text: "Scraping",
+    className: "text-primary dark:text-primary",
+  },
+  {
+    text: "Workflows.",
+  },
+];
