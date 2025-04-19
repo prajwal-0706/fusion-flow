@@ -24,9 +24,10 @@ export default function BreadcrumbHeader() {
             <React.Fragment key={index}>
               <BreadcrumbItem>
                 <BreadcrumbLink className="capitalize" href={`/${path}`}>
-                  {path === "" ? "Home" : path}
+                  {path === "" ? "Home" : path === "home" ? "Dashboard" : path}
                 </BreadcrumbLink>
               </BreadcrumbItem>
+              {index !== paths.length - 1 && <BreadcrumbSeparator />}
             </React.Fragment>
           ))}
         </BreadcrumbList>
