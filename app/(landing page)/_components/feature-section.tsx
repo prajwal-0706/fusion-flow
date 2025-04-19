@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 
 export default function FeatureSection() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  relative z-10 py-10 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto dark:border-neutral-800">
       {FEATURES.map((feature, index) => (
         <Feature
           key={feature.title}
           {...feature}
           index={index}
+          totalFeatures={FEATURES.length}
           hoverChipClassName={feature.hoverChipClassName as string}
         />
       ))}
@@ -23,20 +24,27 @@ const Feature = ({
   description,
   icon,
   index,
+  totalFeatures,
   hoverChipClassName,
 }: {
   title: string;
   description: string;
   icon: React.ReactNode;
   index: number;
+  totalFeatures: number;
   hoverChipClassName?: string;
 }) => {
+  // Calculate row and column position
+  const col = index % 4;
+  const isLastRow = index >= totalFeatures - 4;
+
   return (
     <div
       className={cn(
-        "flex flex-col lg:border-r  py-10 relative group/feature dark:border-neutral-800",
-        (index === 0 || index === 4) && "lg:border-l dark:border-neutral-800",
-        index < 4 && "lg:border-b dark:border-neutral-800"
+        "flex flex-col py-10 relative group/feature",
+        "border-r dark:border-neutral-800",
+        !isLastRow && "border-b dark:border-neutral-800",
+        col === 0 && "border-l dark:border-neutral-800"
       )}
     >
       {index < 4 && (

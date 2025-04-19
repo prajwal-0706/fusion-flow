@@ -142,7 +142,7 @@ export const FEATURES = [
     description:
       "Simulates a click action on a specified HTML element, triggering any associated events or navigation.",
     icon: <MousePointerClick className="stroke-orange-400" />,
-    hoverChipClassName: -'group.hover/feature:bg-"-500',
+    hoverChipClassName: 'group-hover/feature:bg-"-500',
   },
   {
     title: "Scroll to element",
