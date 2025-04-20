@@ -32,7 +32,10 @@ export default function Navbar() {
               href={href}
               key={title}
             >
-              <Button className="hover:bg-white group text-white hover:text-primary">
+              <Button
+                variant="outline"
+                className="text-sm border-primary/20 text-primary hover:bg-primary/10"
+              >
                 {title}
               </Button>
             </Link>

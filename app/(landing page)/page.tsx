@@ -9,6 +9,7 @@ import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { TYPEWRITER_WORDS } from "@/lib/constants";
 import FeatureGradient from "./_components/feature-gradient";
 import FeatureSection from "./_components/feature-section";
+import PricingSection from "./_components/pricing-section";
 
 export default function HomePage() {
   return (
@@ -53,28 +54,14 @@ export default function HomePage() {
             New users get 200 credits for free upon first login
           </p>
         </SectionWrapper>
-      </div>
-
-      <SectionWrapper
-        id="howItWorks"
-        primaryTitle="How"
-        secondaryTitle="It Works"
-        className="py-20 font-bold"
-      >
-        <FeatureGradient />
-      </SectionWrapper>
-
-      <div className="relative flex flex-col items-center justify-center bg-[#0C0A09] py-20">
-        <div
-          className={cn(
-            "absolute inset-0",
-            "[background-size:20px_20px]",
-            "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
-            "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]"
-          )}
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-
+        <SectionWrapper
+          id="howItWorks"
+          primaryTitle="How"
+          secondaryTitle="It Works"
+          className="py-20 font-bold relative z-20"
+        >
+          <FeatureGradient />
+        </SectionWrapper>
         <SectionWrapper
           id="scrapingFeatures"
           primaryTitle="Scraping"
@@ -82,6 +69,14 @@ export default function HomePage() {
           className="min-w-full relative z-20 font-bold"
         >
           <FeatureSection />
+        </SectionWrapper>
+        <SectionWrapper
+          id="pricing"
+          primaryTitle="Pricing"
+          secondaryTitle="Plans"
+          className="min-w-full relative z-20 font-bold"
+        >
+          <PricingSection />
         </SectionWrapper>
       </div>
     </div>
