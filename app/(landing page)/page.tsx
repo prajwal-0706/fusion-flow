@@ -9,6 +9,11 @@ import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { TYPEWRITER_WORDS } from "@/lib/constants";
 import FeatureGradient from "./_components/feature-gradient";
 import FeatureSection from "./_components/feature-section";
+import PricingSection from "./_components/pricing-section";
+import TestimonialsSection from "./_components/testimonials-section";
+import FAQSection from "./_components/faq-section";
+import CTASection from "./_components/cta-section";
+import Footer from "./_components/footer";
 
 export default function HomePage() {
   return (
@@ -25,7 +30,7 @@ export default function HomePage() {
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-        <SectionWrapper className="h-[100dvh] text-center -mt-[10rem] relative z-20">
+        <SectionWrapper className="h-[100dvh] text-center relative z-20">
           <TypewriterEffectSmooth
             className="mb-0 space-y-0"
             cursorClassName="bg-primary"
@@ -53,28 +58,14 @@ export default function HomePage() {
             New users get 200 credits for free upon first login
           </p>
         </SectionWrapper>
-      </div>
-
-      <SectionWrapper
-        id="howItWorks"
-        primaryTitle="How"
-        secondaryTitle="It Works"
-        className="py-20 font-bold"
-      >
-        <FeatureGradient />
-      </SectionWrapper>
-
-      <div className="relative flex flex-col items-center justify-center bg-[#0C0A09] py-20">
-        <div
-          className={cn(
-            "absolute inset-0",
-            "[background-size:20px_20px]",
-            "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
-            "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]"
-          )}
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-
+        <SectionWrapper
+          id="howItWorks"
+          primaryTitle="How"
+          secondaryTitle="It Works"
+          className="py-20 font-bold relative z-20"
+        >
+          <FeatureGradient />
+        </SectionWrapper>
         <SectionWrapper
           id="scrapingFeatures"
           primaryTitle="Scraping"
@@ -83,6 +74,32 @@ export default function HomePage() {
         >
           <FeatureSection />
         </SectionWrapper>
+        <SectionWrapper
+          id="pricing"
+          primaryTitle="Pricing"
+          secondaryTitle="Plans"
+          className="min-w-full relative z-20 font-bold"
+        >
+          <PricingSection />
+        </SectionWrapper>
+        <SectionWrapper
+          id="testimonials"
+          primaryTitle="What Our"
+          secondaryTitle="Customers Say"
+          className=" relative z-20 font-bold"
+        >
+          <TestimonialsSection />
+        </SectionWrapper>
+        <SectionWrapper
+          id="faq"
+          primaryTitle="Frequently Asked"
+          secondaryTitle="Questions"
+          className="min-w-full relative z-20 font-bold"
+        >
+          <FAQSection />
+        </SectionWrapper>
+        <CTASection />
+        <Footer />
       </div>
     </div>
   );
@@ -109,9 +126,14 @@ function SectionWrapper({
       )}
       id={id}
     >
-      <div className="text-2xl md:text-4xl lg:text-6xl text-foreground">
-        <span className="text-primary">{primaryTitle}</span>&nbsp;
-        <span className="">{secondaryTitle}</span>
+      <div className="text-2xl md:text-4xl lg:text-6xl text-foreground group">
+        <span className="bg-gradient-to-b from-primary via-primary/80 to-primary/50 text-transparent bg-clip-text group-hover:to-white/90 transition-all duration-500">
+          {primaryTitle}
+        </span>
+        &nbsp;
+        <span className="bg-gradient-to-b from-white via-white/90 to-white/70 text-transparent bg-clip-text group-hover:to-primary/90 transition-all duration-500">
+          {secondaryTitle}
+        </span>
       </div>
       {children}
     </section>
