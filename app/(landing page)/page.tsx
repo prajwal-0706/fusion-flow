@@ -30,7 +30,7 @@ export default function HomePage() {
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-        <SectionWrapper className="h-[100dvh] text-center -mt-[10rem] relative z-20">
+        <SectionWrapper className="h-[100dvh] text-center relative z-20">
           <TypewriterEffectSmooth
             className="mb-0 space-y-0"
             cursorClassName="bg-primary"
@@ -99,8 +99,8 @@ export default function HomePage() {
           <FAQSection />
         </SectionWrapper>
         <CTASection />
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 }
