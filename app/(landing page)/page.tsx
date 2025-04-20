@@ -10,6 +10,10 @@ import { TYPEWRITER_WORDS } from "@/lib/constants";
 import FeatureGradient from "./_components/feature-gradient";
 import FeatureSection from "./_components/feature-section";
 import PricingSection from "./_components/pricing-section";
+import TestimonialsSection from "./_components/testimonials-section";
+import FAQSection from "./_components/faq-section";
+import CTASection from "./_components/cta-section";
+import Footer from "./_components/footer";
 
 export default function HomePage() {
   return (
@@ -78,7 +82,25 @@ export default function HomePage() {
         >
           <PricingSection />
         </SectionWrapper>
+        <SectionWrapper
+          id="testimonials"
+          primaryTitle="What Our"
+          secondaryTitle="Customers Say"
+          className="min-w-full relative z-20 font-bold"
+        >
+          <TestimonialsSection />
+        </SectionWrapper>
+        <SectionWrapper
+          id="faq"
+          primaryTitle="Frequently Asked"
+          secondaryTitle="Questions"
+          className="min-w-full relative z-20 font-bold"
+        >
+          <FAQSection />
+        </SectionWrapper>
+        <CTASection />
       </div>
+      <Footer />
     </div>
   );
 }
