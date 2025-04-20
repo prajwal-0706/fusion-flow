@@ -86,7 +86,7 @@ export default function HomePage() {
           id="testimonials"
           primaryTitle="What Our"
           secondaryTitle="Customers Say"
-          className="min-w-full relative z-20 font-bold"
+          className=" relative z-20 font-bold"
         >
           <TestimonialsSection />
         </SectionWrapper>
@@ -126,9 +126,14 @@ function SectionWrapper({
       )}
       id={id}
     >
-      <div className="text-2xl md:text-4xl lg:text-6xl text-foreground">
-        <span className="text-primary">{primaryTitle}</span>&nbsp;
-        <span className="">{secondaryTitle}</span>
+      <div className="text-2xl md:text-4xl lg:text-6xl text-foreground group">
+        <span className="bg-gradient-to-b from-primary via-primary/80 to-primary/50 text-transparent bg-clip-text group-hover:to-white/90 transition-all duration-500">
+          {primaryTitle}
+        </span>
+        &nbsp;
+        <span className="bg-gradient-to-b from-white via-white/90 to-white/70 text-transparent bg-clip-text group-hover:to-primary/90 transition-all duration-500">
+          {secondaryTitle}
+        </span>
       </div>
       {children}
     </section>
