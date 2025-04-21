@@ -1,12 +1,7 @@
 import React from "react";
-import { ChevronRightIcon } from "lucide-react";
-import Link from "next/link";
 
 import Navbar from "./_components/navbar";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
-import { TYPEWRITER_WORDS } from "@/lib/constants";
 import FeatureGradient from "./_components/feature-gradient";
 import FeatureSection from "./_components/feature-section";
 import PricingSection from "./_components/pricing-section";
@@ -14,6 +9,7 @@ import TestimonialsSection from "./_components/testimonials-section";
 import FAQSection from "./_components/faq-section";
 import CTASection from "./_components/cta-section";
 import Footer from "./_components/footer";
+import HeroSection from "./_components/hero-section";
 
 export default function HomePage() {
   return (
@@ -30,39 +26,34 @@ export default function HomePage() {
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0C0A09] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-        <SectionWrapper className="h-[100dvh] text-center relative z-20">
-          <TypewriterEffectSmooth
-            className="mb-0 space-y-0"
-            cursorClassName="bg-primary"
-            words={TYPEWRITER_WORDS}
-          />
-          <p className="text-muted-foreground text-sm md:text-xl">
-            Create, automate, and scale your web scraping projects with ease. No
-            coding required.
-          </p>
-          <div className="flex flex-col md:flex-row m-5">
-            <Button
-              className="w-52 h-12 rounded-xl text-base border-primary text-primary hover:text-white hover:bg-primary/30 group flex items-center justify-center"
-              variant={"outline"}
-            >
-              <Link
-                href={"/sign-in"}
-                className="flex items-center justify-center"
-              >
-                Get Started
-                <ChevronRightIcon className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-          <p className="text-base text-primary">
-            New users get 200 credits for free upon first login
-          </p>
+        {/* Animated floating elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className={cn(
+                "absolute w-64 h-64 rounded-full opacity-20",
+                "bg-gradient-to-br from-primary/30 to-transparent",
+                "animate-[float_8s_ease-in-out_infinite]",
+                i % 2 === 0 ? "animate-delay-0" : "animate-delay-1000"
+              )}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        <SectionWrapper className="min-h-[calc(100vh-64px)] md:h-[100dvh] text-center relative z-20">
+          <HeroSection />
         </SectionWrapper>
         <SectionWrapper
           id="howItWorks"
           primaryTitle="How"
           secondaryTitle="It Works"
-          className="py-20 font-bold relative z-20"
+          className="py-20 mt-10 font-bold relative z-20"
         >
           <FeatureGradient />
         </SectionWrapper>
