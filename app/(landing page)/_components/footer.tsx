@@ -13,6 +13,7 @@ const Footer = () => {
 
   return (
     <motion.footer
+      id="footer"
       style={{ opacity, y }}
       className="relative w-full overflow-hidden bg-transparent border-t border-primary/10"
     >
