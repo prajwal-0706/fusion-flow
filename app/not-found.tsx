@@ -3,8 +3,15 @@
 import Link from "next/link";
 import { HomeIcon, ArrowLeftIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export default function NotFound() {
+  const [footerLink, setFooterLink] = useState("#footer");
+
+  useEffect(() => {
+    setFooterLink(window.location.origin + "#footer");
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#0C0A09] relative overflow-hidden">
       {/* Background pattern */}
@@ -67,7 +74,8 @@ export default function NotFound() {
           </h2>
 
           <p className="text-muted-foreground text-lg mb-12 max-w-md mx-auto leading-relaxed">
-            The page you're looking for doesn't exist or has been moved.
+            The page you&apos;re looking for doesn&apos;t exist or has been
+            moved.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -94,7 +102,7 @@ export default function NotFound() {
 
           <div className="mt-12">
             <Link
-              href={window.location.origin + "#footer"}
+              href={footerLink}
               className="group text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               <span className="relative">
