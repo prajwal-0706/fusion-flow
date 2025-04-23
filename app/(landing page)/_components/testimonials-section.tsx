@@ -83,6 +83,7 @@ function StatCard({
           <div className="inline-flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-primary/50 animate-pulse" />
             <div className="relative mx-2 text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-b from-white via-white/90 to-white/70 text-transparent bg-clip-text group-hover:to-primary/90 transition-all duration-500">
+              {/* @ts-ignore */}
               <CountUp
                 end={Number(stat.value)}
                 duration={1}
