@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useInView,
+} from "framer-motion";
 import { Star, Quote, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TESTIMONIALS } from "@/lib/constants";
@@ -24,6 +30,7 @@ function StatCard({
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true });
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -75,14 +82,16 @@ function StatCard({
         <div className="relative space-y-2 text-center">
           <div className="inline-flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-primary/50 animate-pulse" />
-
-            {/* @ts-ignore */}
-            <CountUp
-              className="relative mx-2 text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-b from-white via-white/90 to-white/70 text-transparent bg-clip-text group-hover:to-primary/90 transition-all duration-500"
-              end={Number(stat.value)}
-              duration={1}
-              suffix={stat.suffix || ""}
-            />
+            <div className="relative mx-2 text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-b from-white via-white/90 to-white/70 text-transparent bg-clip-text group-hover:to-primary/90 transition-all duration-500">
+              <CountUp
+                end={Number(stat.value)}
+                duration={1}
+                suffix={stat.suffix || ""}
+                startOnMount={false}
+                enableScrollSpy={true}
+                scrollSpyOnce={true}
+              />
+            </div>
             <Sparkles className="w-5 h-5 text-primary/50 animate-pulse" />
           </div>
           <div className="text-sm md:text-base text-zinc-400 group-hover:text-zinc-300 transition-colors duration-500">
