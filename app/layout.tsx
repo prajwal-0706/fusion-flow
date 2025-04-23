@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import { AppProviders } from "@/components/providers/app-providers";
 
@@ -17,10 +18,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <AppProviders>{children}</AppProviders>
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          formButtonPrimary: "bg-primary text-primary-foreground hover:bg-primary/90",
+        },
+      }}
+    >
+      <html lang="en">
+        <body className={inter.className}>
+          <AppProviders>{children}</AppProviders>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
