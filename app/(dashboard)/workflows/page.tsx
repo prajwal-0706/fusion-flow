@@ -1,5 +1,9 @@
 import React, { Suspense } from "react";
-import { UserWorkflows, UserWorkflowsSkeleton } from "./_components";
+import {
+  UserWorkflows,
+  UserWorkflowsSkeleton,
+  CreateWorkflowDialog,
+} from "./_components";
 
 export default function page() {
   return (
@@ -11,6 +15,7 @@ export default function page() {
             Create, manage, and run workflows
           </p>
         </div>
+        <CreateWorkflowDialog />
       </div>
       <div className="h-full py-6">
         <Suspense fallback={<UserWorkflowsSkeleton />}>
@@ -18,5 +23,5 @@ export default function page() {
         </Suspense>
       </div>
     </div>
-  )
+  );
 }
