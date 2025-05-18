@@ -18,6 +18,7 @@ export default function NotFound() {
       <div
         className={cn(
           "absolute inset-0",
+          "opacity-25",
           "[background-size:20px_20px]",
           "[background-image:radial-gradient(#d4d4d4_1px,transparent_1px)]",
           "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]"
@@ -27,7 +28,7 @@ export default function NotFound() {
 
       {/* Animated floating elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <div
             key={i}
             className={cn(
@@ -38,7 +39,7 @@ export default function NotFound() {
             )}
             style={{
               left: `${Math.random() * 100 - 20}%`,
-              top: `${Math.random() * 100 - 20}%`,
+              top: `${Math.random() * 80 - 20}%`,
               animationDelay: `${i * 2 + 1}s`,
             }}
           />
