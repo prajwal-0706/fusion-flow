@@ -19,20 +19,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning lang="en">
-    <ClerkProvider
-      appearance={{
-        elements: {
-          formButtonPrimary:
-            "bg-primary text-primary-foreground hover:bg-primary/90",
-        },
-      }}
-    >
+    <html suppressHydrationWarning={true} lang="en">
+      <ClerkProvider
+        appearance={{
+          elements: {
+            formButtonPrimary:
+              "bg-primary text-primary-foreground hover:bg-primary/90",
+          },
+        }}
+      >
         <body className={inter.className}>
           <AppProviders>{children}</AppProviders>
+          <Toaster richColors />
         </body>
-      <Toaster richColors />
-    </ClerkProvider>
-      </html>
+      </ClerkProvider>
+    </html>
   );
 }
