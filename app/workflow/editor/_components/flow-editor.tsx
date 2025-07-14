@@ -14,6 +14,12 @@ import {
 
 import "@xyflow/react/dist/style.css";
 
+import NodeComponent from "./nodes/node-component";
+
+const nodeTypes = {
+  FusionFlowNode: NodeComponent,
+};
+
 export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([
     CreateWorkflowNode(TaskType.LAUNCH_BROWSER),
@@ -27,6 +33,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
       >
         <Controls position="top-left" />
         <Background variant={BackgroundVariant.Dots} gap={12} />
