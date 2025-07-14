@@ -20,6 +20,14 @@ const nodeTypes = {
   FusionFlowNode: NodeComponent,
 };
 
+// This is the grid size for snapping nodes in the flow editor for better alignment.
+const snapGrid: [number, number] = [50, 50];
+
+// FitViewOptions can be adjusted to change the initial zoom and position of the view.
+const fitViewOptions = {
+  padding: 2,
+};
+
 export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([
     CreateWorkflowNode(TaskType.LAUNCH_BROWSER),
@@ -34,8 +42,12 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        snapGrid={snapGrid}
+        fitViewOptions={fitViewOptions}
+        snapToGrid
+        fitView
       >
-        <Controls position="top-left" />
+        <Controls fitViewOptions={fitViewOptions} position="top-left" />
         <Background variant={BackgroundVariant.Dots} gap={12} />
       </ReactFlow>
     </main>
