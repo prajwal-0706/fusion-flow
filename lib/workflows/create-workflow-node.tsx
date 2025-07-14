@@ -7,11 +7,11 @@ export function CreateWorkflowNode(
 ): CustomReactFlowNode {
   return {
     id: crypto.randomUUID(),
+    type: "FusionFlowNode",
+    dragHandle: ".drag-handle",
     data: {
       type: nodeType,
-      inputs: {
-        data: "adazssdasd",
-      },
+      inputs: {},
     },
     position: position ?? { x: 0, y: 0 },
   };

@@ -1,5 +1,6 @@
+import { TaskType } from "@/types/task";
 import { LaunchBrowserTask } from "./launch-browser";
 
 export const TaskRegistry = {
-  LAUNCH_BROWSER: LaunchBrowserTask,
+  [TaskType.LAUNCH_BROWSER]: LaunchBrowserTask,
 };
