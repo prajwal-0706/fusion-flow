@@ -51,17 +51,20 @@ export default function CreateWorkflowDialog({
 
   const onSubmit = useCallback(
     (values: CreateWorkflowSchemaType) => {
-      toast.loading("Creating Workflow..."), { id: "create-workflow" };
+      toast.loading("Creating Workflow...", { id: "create-workflow" });
       mutate(values);
     },
     [mutate]
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      form.reset();
-      setIsOpen(open);
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        form.reset();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         <Button>{triggerText ?? "Create Workflow"}</Button>
       </DialogTrigger>
