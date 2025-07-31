@@ -9,6 +9,7 @@ import {
   Connection,
   Controls,
   Edge,
+  getOutgoers,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -22,6 +23,7 @@ import { CreateWorkflowNode } from "@/lib/workflows/create-workflow-node";
 import { TaskType } from "@/types/task";
 import { CustomReactFlowNode } from "@/types/custom-node";
 import DeletableEdge from "./edges/deletable-edge";
+import { TaskRegistry } from "@/lib/workflows/tasks/registry";
 
 const nodeTypes = {
   FusionFlowNode: NodeComponent,
@@ -44,7 +46,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     []
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-  const { setViewport, screenToFlowPosition } = useReactFlow();
+  const { setViewport, screenToFlowPosition, updateNodeData } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -64,23 +66,88 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const taskType = event.dataTransfer.getData("application/reactflow");
-    if (typeof taskType === undefined || !taskType) return;
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const taskType = event.dataTransfer.getData("application/reactflow");
+      if (typeof taskType === undefined || !taskType) return;
 
-    const position = screenToFlowPosition({
-      x: event.clientX,
-      y: event.clientY,
-    });
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
 
-    const newNode = CreateWorkflowNode(taskType as TaskType, position);
-    setNodes((nodes) => nodes.concat(newNode));
-  }, []);
+      const newNode = CreateWorkflowNode(taskType as TaskType, position);
+      setNodes((nodes) => nodes.concat(newNode));
+    },
+    [screenToFlowPosition, setNodes]
+  );
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+
+      if (!connection.targetHandle) return;
+
+      const node = nodes.find((n) => n.id === connection.target);
+      if (!node) return;
+
+      const nodeInputs = node.data.inputs;
+      updateNodeData(node.id, {
+        inputs: {
+          ...nodeInputs,
+          [connection.targetHandle]: "",
+        },
+      });
+    },
+    [setEdges, updateNodeData, nodes]
+  );
+
+  const isValidConnection = useCallback(
+    (connection: Edge | Connection) => {
+      // No Self-connection allowed
+      if (connection.source === connection.target) {
+        return false;
+      }
+
+      // Same TaskParams type Connection
+      const source = nodes.find((n) => n.id === connection.source);
+      const target = nodes.find((n) => n.id === connection.target);
+      if (!source || !target) {
+        console.error("Source or target not found - (Invalid Connection)");
+        return false;
+      }
+
+      const sourceTask = TaskRegistry[source.data.type];
+      const targetTask = TaskRegistry[target.data.type];
+
+      const output = sourceTask.outputs.find(
+        (output) => output.name === connection.sourceHandle
+      );
+      const input = targetTask.inputs.find(
+        (input) => input.name === connection.targetHandle
+      );
+
+      if (input?.type !== output?.type) {
+        return false;
+      }
+
+      const hasCycle = (node: CustomReactFlowNode, visited = new Set()) => {
+        if (visited.has(node.id)) return false;
+        visited.add(node.id);
+
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+
+      const detectedCycle = hasCycle(target);
+
+      return !detectedCycle;
+    },
+    [nodes, edges]
+  );
 
   return (
     <main className="h-full w-full">
@@ -102,6 +169,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         onDragOver={onDragOver}
         onDrop={onDrop}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
       >
         <Controls fitViewOptions={fitViewOptions} position="top-left" />
         <Background variant={BackgroundVariant.Dots} gap={12} />
