@@ -46,6 +46,8 @@ export default function NodeHeader({
               <Button
                 onClick={() => {
                   const node = getNode(nodeId) as CustomReactFlowNode;
+                  if (!node) return;
+
                   const newX = node.position.x;
                   const newY =
                     node.position.y + (node.measured?.height ?? 150) + 20;

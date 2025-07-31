@@ -72,7 +72,13 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       const taskType = event.dataTransfer.getData("application/reactflow");
-      if (!taskType) return;
+      if (
+        !taskType ||
+        !Object.values(TaskType).includes(taskType as TaskType)
+      ) {
+        console.error("Invalid task type dropped:", taskType);
+        return;
+      }
 
       const position = screenToFlowPosition({
         x: event.clientX,
