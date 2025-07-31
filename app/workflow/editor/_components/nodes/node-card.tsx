@@ -41,7 +41,7 @@ export default function NodeCard({
     <div
       onDoubleClick={handleDoubleClick}
       className={cn(
-        "rounded-md cursor-pointer bg-background border-2 border-separate w-[420px] text-xs flex gap-1 flex-col overflow-hidden",
+        "rounded-md cursor-pointer bg-background border-2 border-separate w-[420px] text-xs flex gap-1 flex-col",
         isSelected && "border-primary"
       )}
     >

@@ -1,11 +1,14 @@
 "use client";
 
 import { Workflow } from "@prisma/client";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
+  addEdge,
   Background,
   BackgroundVariant,
+  Connection,
   Controls,
+  Edge,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -15,9 +18,17 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import NodeComponent from "./nodes/node-component";
+import { CreateWorkflowNode } from "@/lib/workflows/create-workflow-node";
+import { TaskType } from "@/types/task";
+import { CustomReactFlowNode } from "@/types/custom-node";
+import DeletableEdge from "./edges/deletable-edge";
 
 const nodeTypes = {
   FusionFlowNode: NodeComponent,
+};
+
+const edgeTypes = {
+  default: DeletableEdge,
 };
 
 // This is the grid size for snapping nodes in the flow editor for better alignment.
@@ -29,9 +40,11 @@ const fitViewOptions = {
 };
 
 export default function FlowEditor({ workflow }: { workflow: Workflow }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { setViewport } = useReactFlow();
+  const [nodes, setNodes, onNodesChange] = useNodesState<CustomReactFlowNode>(
+    []
+  );
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const { setViewport, screenToFlowPosition } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -46,6 +59,29 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     } catch (error) {}
   }, [workflow.definition, setNodes, setEdges, setViewport]);
 
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const taskType = event.dataTransfer.getData("application/reactflow");
+    if (typeof taskType === undefined || !taskType) return;
+
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    const newNode = CreateWorkflowNode(taskType as TaskType, position);
+    setNodes((nodes) => nodes.concat(newNode));
+  }, []);
+
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+  }, []);
+
   return (
     <main className="h-full w-full">
       <ReactFlow
@@ -54,6 +90,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         snapGrid={snapGrid}
         fitViewOptions={fitViewOptions}
         snapToGrid
@@ -62,6 +99,9 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
 
         If you want to change the restore the previous viewport, you can remove this prop.
         */
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        onConnect={onConnect}
       >
         <Controls fitViewOptions={fitViewOptions} position="top-left" />
         <Background variant={BackgroundVariant.Dots} gap={12} />
