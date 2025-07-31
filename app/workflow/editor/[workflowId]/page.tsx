@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 import WorkflowEditor from "../_components/editor";
 
-export default async function EdiorPage({
+export default async function EditorPage({
   params,
 }: {
   params: { workflowId: string };
@@ -12,7 +13,7 @@ export default async function EdiorPage({
   const { userId } = await auth();
 
   if (!userId) {
-    return <div>UnAuthenticated</div>;
+    return redirect("/sign-in");
   }
 
   const workflow = await prisma.workflow.findUnique({
@@ -23,7 +24,7 @@ export default async function EdiorPage({
   });
 
   if (!workflow) {
-    return <div className="">No workflow found for this ID: {workflowId}</div>;
+    return redirect("/workflows");
   }
 
   return <WorkflowEditor workflow={workflow} />;
