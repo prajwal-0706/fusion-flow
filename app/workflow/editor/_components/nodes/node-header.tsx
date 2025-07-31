@@ -47,7 +47,8 @@ export default function NodeHeader({
                 onClick={() => {
                   const node = getNode(nodeId) as CustomReactFlowNode;
                   const newX = node.position.x;
-                  const newY = node.position.y + node.measured?.height! + 20;
+                  const newY =
+                    node.position.y + (node.measured?.height ?? 150) + 20;
 
                   const newNode = CreateWorkflowNode(node.data.type, {
                     x: newX,

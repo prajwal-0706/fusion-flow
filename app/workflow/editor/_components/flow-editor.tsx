@@ -72,7 +72,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       const taskType = event.dataTransfer.getData("application/reactflow");
-      if (typeof taskType === undefined || !taskType) return;
+      if (!taskType) return;
 
       const position = screenToFlowPosition({
         x: event.clientX,
@@ -102,7 +102,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         },
       });
     },
-    [setEdges, updateNodeData] // TODO: removed `nodes` for now, will update if needed
+    [setEdges, updateNodeData, nodes]
   );
 
   const isValidConnection = useCallback(
