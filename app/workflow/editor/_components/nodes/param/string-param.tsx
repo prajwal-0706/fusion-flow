@@ -16,7 +16,7 @@ export default function StringParam({
   const [internalValue, setInternalValue] = useState(value);
   const id = useId();
 
-  let Component: any = Input;
+  let Component: typeof Input | typeof Textarea = Input;
 
   if (param.variant === "textarea") {
     Component = Textarea;

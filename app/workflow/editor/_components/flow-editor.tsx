@@ -58,7 +58,9 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
       if (!flow.viewport) return;
       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
       setViewport({ x, y, zoom });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Failed to parse workflow definition:", error);
+    }
   }, [workflow.definition, setNodes, setEdges, setViewport]);
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -100,7 +102,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         },
       });
     },
-    [setEdges, updateNodeData, nodes]
+    [setEdges, updateNodeData] // TODO: removed `nodes` for now, will update if needed
   );
 
   const isValidConnection = useCallback(
