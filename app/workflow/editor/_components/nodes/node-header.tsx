@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useReactFlow } from "@xyflow/react";
 import { CoinsIcon, CopyIcon, GripVerticalIcon, TrashIcon } from "lucide-react";
 
@@ -17,6 +18,22 @@ export default function NodeHeader({
 }) {
   const task = TaskRegistry[taskType];
   const { deleteElements, getNode, addNodes } = useReactFlow();
+
+  const handleDuplicate = useCallback(() => {
+    const node = getNode(nodeId) as CustomReactFlowNode;
+    if (!node) return;
+
+    const newX = node.position.x;
+    const newY = node.position.y + (node.measured?.height ?? 150) + 20;
+
+    const newNode = CreateWorkflowNode(node.data.type, {
+      x: newX,
+      y: newY,
+    });
+
+    addNodes([newNode]);
+  }, [getNode, addNodes, nodeId]);
+
   return (
     <div className="flex items-center gap-2 p-2">
       <task.icon size={16} />
@@ -43,25 +60,7 @@ export default function NodeHeader({
               >
                 <TrashIcon size={12} />
               </Button>
-              <Button
-                onClick={() => {
-                  const node = getNode(nodeId) as CustomReactFlowNode;
-                  if (!node) return;
-
-                  const newX = node.position.x;
-                  const newY =
-                    node.position.y + (node.measured?.height ?? 150) + 20;
-
-                  const newNode = CreateWorkflowNode(node.data.type, {
-                    x: newX,
-                    y: newY,
-                  });
-
-                  addNodes([newNode]);
-                }}
-                variant="ghost"
-                size="icon"
-              >
+              <Button onClick={handleDuplicate} variant="ghost" size="icon">
                 <CopyIcon size={12} />
               </Button>
             </>
