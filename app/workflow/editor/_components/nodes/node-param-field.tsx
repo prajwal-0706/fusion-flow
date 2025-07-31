@@ -6,13 +6,16 @@ import { useCallback } from "react";
 import StringParam from "./param/string-param";
 import { TaskParams, TaskParamType } from "@/types/task";
 import { CustomReactFlowNode } from "@/types/custom-node";
+import BrowserInstanceParam from "./param/browser-instance-param";
 
 export default function NodeParamField({
   param,
   nodeId,
+  disabled,
 }: {
   param: TaskParams;
   nodeId: string;
+  disabled?: boolean;
 }) {
   const { updateNodeData, getNode } = useReactFlow();
   const node = getNode(nodeId) as CustomReactFlowNode;
@@ -20,6 +23,7 @@ export default function NodeParamField({
 
   const updateNodeParamValue = useCallback(
     (newValue: string) => {
+      if (!node) return;
       updateNodeData(nodeId, {
         inputs: {
           ...node.data.inputs,
@@ -27,8 +31,10 @@ export default function NodeParamField({
         },
       });
     },
-    [node?.data.inputs, nodeId, param.name, updateNodeData]
+    [node, nodeId, param.name, updateNodeData]
   );
+
+  if (!node) return null;
 
   switch (param.type) {
     case TaskParamType.STRING:
@@ -36,6 +42,15 @@ export default function NodeParamField({
         <StringParam
           param={param}
           value={value}
+          updateNodeParamValue={updateNodeParamValue}
+          disabled={disabled}
+        />
+      );
+    case TaskParamType.BROWSER_INSTANCE:
+      return (
+        <BrowserInstanceParam
+          param={param}
+          value={""}
           updateNodeParamValue={updateNodeParamValue}
         />
       );
