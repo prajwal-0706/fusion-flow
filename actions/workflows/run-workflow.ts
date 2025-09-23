@@ -37,7 +37,14 @@ export async function runWorkflow(form: RunWorkflowSchema) {
     throw new Error("Flow definition is required");
   }
 
-  const parsedFlowDefinition = JSON.parse(flowDefinition);
+  const parsedFlowDefinition = (() => {
+    try {
+      return JSON.parse(flowDefinition);
+    } catch (e) {
+      throw new Error("Invalid flow definition: not a valid JSON string.");
+    }
+  })();
+
   const result = FlowToExecutionPlan(
     parsedFlowDefinition.nodes,
     parsedFlowDefinition.edges
