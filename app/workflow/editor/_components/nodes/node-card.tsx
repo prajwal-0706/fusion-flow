@@ -3,6 +3,7 @@
 import { useReactFlow } from "@xyflow/react";
 
 import { cn } from "@/lib/utils";
+import useFlowValidation from "@/hooks/use-flow-validation";
 
 interface NodeCardProps {
   nodeId: string;
@@ -16,6 +17,8 @@ export default function NodeCard({
   children,
 }: NodeCardProps) {
   const { getNode, setCenter } = useReactFlow();
+  const { inValidInputs } = useFlowValidation();
+  const hasInvalidInputs = inValidInputs.some((node) => node.nodeId === nodeId);
 
   const handleDoubleClick = () => {
     const node = getNode(nodeId);
@@ -42,7 +45,8 @@ export default function NodeCard({
       onDoubleClick={handleDoubleClick}
       className={cn(
         "rounded-md cursor-pointer bg-background border-2 border-separate w-[420px] text-xs flex gap-1 flex-col",
-        isSelected && "border-primary"
+        isSelected && "border-primary",
+        hasInvalidInputs && "border-destructive border-2 animate-shake"
       )}
     >
       {children}

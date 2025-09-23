@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { TaskParams } from "@/types/task";
 import NodeParamField from "./node-param-field";
 import { ColorForHandle } from "./common";
+import useFlowValidation from "@/hooks/use-flow-validation";
 
 export default function NodeInputs({
   children,
@@ -24,8 +25,19 @@ export function NodeInput({
   const isConnected = edges.some(
     (edge) => edge.target === nodeId && edge.targetHandle === input.name
   );
+
+  const { inValidInputs } = useFlowValidation();
+  const hasErrors = inValidInputs
+    .find((node) => node.nodeId === nodeId)
+    ?.inputs.includes(input.name);
+
   return (
-    <div className="flex justify-start relative bg-secondary w-full p-3">
+    <div
+      className={cn(
+        "flex justify-start relative bg-secondary w-full p-3",
+        hasErrors && "bg-destructive/30"
+      )}
+    >
       <NodeParamField disabled={isConnected} nodeId={nodeId} param={input} />
       {!input.hideHandle && (
         <Handle
