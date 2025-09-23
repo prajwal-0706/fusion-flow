@@ -1,5 +1,7 @@
 import { LucideProps } from "lucide-react";
+
 import { TaskParams, TaskType } from "./task";
+import { CustomReactFlowNode } from "./custom-node";
 
 export enum WorkflowStatus {
   DRAFT = "DRAFT",
@@ -15,3 +17,10 @@ export type WorkflowTask = {
   outputs: TaskParams[];
   credits: number;
 };
+
+export type WorkflowExecutionPlanPhase = {
+  phase: number;
+  nodes: CustomReactFlowNode[];
+};
+
+export type WorkflowExecutionPlan = WorkflowExecutionPlanPhase[];

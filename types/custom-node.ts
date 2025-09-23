@@ -18,3 +18,18 @@ export interface ParamProps {
   disabled?: boolean;
   updateNodeParamValue: (newValue: string) => void;
 }
+
+export interface CustomReactFlowNodeMissingInputs {
+  nodeId: string;
+  inputs: string[];
+}
+
+export enum FlowToExecutionPlanValidationError {
+  "NO_ENTRY_POINT",
+  "INVALID_INPUTS",
+}
+
+export interface FlowToExecutionPlanTypeError {
+  type: FlowToExecutionPlanValidationError;
+  inValidElements?: CustomReactFlowNodeMissingInputs[];
+}
