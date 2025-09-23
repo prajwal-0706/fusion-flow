@@ -1,4 +1,4 @@
-import { Edge, getIncomers } from "@xyflow/react";
+import { Edge } from "@xyflow/react";
 
 import {
   CustomReactFlowNode,
@@ -158,4 +158,24 @@ function getInvalidInputs(
   }
 
   return inValidInputs;
+}
+
+// There is getIncomers function in @xyflow/react but it's not working on server side
+// so need to re-implement it here
+function getIncomers(
+  node: CustomReactFlowNode,
+  nodes: CustomReactFlowNode[],
+  edges: Edge[]
+) {
+  if (!node.id) return [];
+
+  const incomersIds = new Set();
+  edges.forEach((edge) => {
+    if (edge.target === node.id) {
+      incomersIds.add(edge.source);
+    }
+  });
+
+  // return all the nodes who has the id in incomersIds
+  return nodes.filter((n) => incomersIds.has(n.id));
 }

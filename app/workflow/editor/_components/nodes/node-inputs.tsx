@@ -29,7 +29,7 @@ export function NodeInput({
   const { inValidInputs } = useFlowValidation();
   const hasErrors = inValidInputs
     .find((node) => node.nodeId === nodeId)
-    ?.inputs.find((inValidInput) => inValidInput === input.name);
+    ?.inputs.includes(input.name);
 
   return (
     <div
