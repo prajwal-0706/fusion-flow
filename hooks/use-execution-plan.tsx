@@ -14,20 +14,23 @@ export default function useExecutionPlan() {
   const { toObject } = useReactFlow();
   const { setInValidInputs, clearErrors } = useFlowValidation();
 
-  const handleError = useCallback((error: FlowToExecutionPlanTypeError) => {
-    switch (error.type) {
-      case FlowToExecutionPlanValidationError.NO_ENTRY_POINT:
-        toast.error("No Entry Point found.");
-        break;
-      case FlowToExecutionPlanValidationError.INVALID_INPUTS:
-        toast.error("Some nodes have invalid or missing inputs.");
-        setInValidInputs(error.inValidElements || []);
-        break;
-      default:
-        toast.error("Something went wrong. Please try again.");
-        break;
-    }
-  }, []);
+  const handleError = useCallback(
+    (error: FlowToExecutionPlanTypeError) => {
+      switch (error.type) {
+        case FlowToExecutionPlanValidationError.NO_ENTRY_POINT:
+          toast.error("No Entry Point found.");
+          break;
+        case FlowToExecutionPlanValidationError.INVALID_INPUTS:
+          toast.error("Some nodes have invalid or missing inputs.");
+          setInValidInputs(error.inValidElements || []);
+          break;
+        default:
+          toast.error("Something went wrong. Please try again.");
+          break;
+      }
+    },
+    [setInValidInputs]
+  );
 
   const generateExecutionPlan = useCallback(() => {
     const { nodes, edges } = toObject();
