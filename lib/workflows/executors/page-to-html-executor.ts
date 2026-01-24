@@ -5,7 +5,7 @@ export async function PageToHtmlExecutor(
   environment: IExecutionEnvironment<typeof PageToHtmlTask>,
 ): Promise<boolean> {
   try {
-    const webSiteUrl = environment.getInput("Website URL");
+    const webSiteUrl = environment.getInput("Web Page");
 
     return true;
   } catch (error) {
