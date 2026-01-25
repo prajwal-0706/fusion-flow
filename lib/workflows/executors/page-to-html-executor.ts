@@ -7,6 +7,7 @@ export async function PageToHtmlExecutor(
   try {
     const html = await environment.getPage()!.content();
     environment.setOutput("HTML", html);
+    console.log("Page HTML content extracted successfully.", html);
     return true;
   } catch (error) {
     console.error("Error launching browser:", error);
