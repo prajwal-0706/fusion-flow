@@ -11,6 +11,7 @@ import { TaskParamType } from "@/types/task";
 import { ExecutionPhase } from "@prisma/client";
 import { TaskRegistry } from "./tasks/registry";
 import { ExecuteRegistry } from "./executors/registry";
+import { Edge } from "@xyflow/react";
 
 export async function executeWorkflow(executionId: string) {
   const execution = await prisma.workflowExecution.findUnique({
@@ -25,6 +26,7 @@ export async function executeWorkflow(executionId: string) {
 
   if (!execution) throw new Error("Workflow execution not found");
 
+  const edges = JSON.parse(execution.definition).edges as Edge[];
   const environment: IEnvironment = { phases: {} };
 
   await initializeWorkflowExecution(executionId, execution.workflowId);
@@ -35,7 +37,11 @@ export async function executeWorkflow(executionId: string) {
 
   for (const phase of execution.phases) {
     // TODO: Consume credits
-    const phaseExecution = await executeWorkflowPhase(phase, environment);
+    const phaseExecution = await executeWorkflowPhase(
+      phase,
+      environment,
+      edges,
+    );
     if (!phaseExecution.success) {
       executionFailed = true;
       break;
@@ -135,10 +141,11 @@ async function finalizeWorkflowExecution(
 async function executeWorkflowPhase(
   phase: ExecutionPhase,
   environment: IEnvironment,
+  edges: Edge[],
 ) {
   const startedAt = new Date();
   const node = JSON.parse(phase.node) as CustomReactFlowNode;
-  setupEnvironmentForPhase(node, environment);
+  setupEnvironmentForPhase(node, environment, edges);
 
   // Update the phase status to RUNNING
   await prisma.executionPhase.update({
@@ -204,6 +211,7 @@ async function executePhase(
 function setupEnvironmentForPhase(
   node: CustomReactFlowNode,
   environment: IEnvironment,
+  edges: Edge[],
 ) {
   environment.phases[node.id] = {
     inputs: {},
@@ -223,6 +231,26 @@ function setupEnvironmentForPhase(
     }
 
     // This means the input is likely coming from previous node
+    const connectedEdge = edges.find(
+      (edge) => edge.target === node.id && edge.targetHandle === input.name,
+    );
+
+    if (!connectedEdge) {
+      console.error(
+        "No connected edge found for input",
+        input.name,
+        "of node",
+        node.id,
+      );
+      continue;
+    }
+
+    const outputValue =
+      environment.phases[connectedEdge.source]?.outputs[
+        connectedEdge.sourceHandle!
+      ];
+
+    environment.phases[node.id].inputs[input.name] = outputValue;
   }
 }
 
