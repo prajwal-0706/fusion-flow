@@ -2,6 +2,7 @@ import "server-only";
 
 import { revalidatePath } from "next/cache";
 import { Page } from "puppeteer";
+import { Edge } from "@xyflow/react";
 
 import prisma from "../prisma";
 import { WorkflowExecutionStatus } from "@/types/workflows";
@@ -11,7 +12,8 @@ import { TaskParamType } from "@/types/task";
 import { ExecutionPhase } from "@prisma/client";
 import { TaskRegistry } from "./tasks/registry";
 import { ExecuteRegistry } from "./executors/registry";
-import { Edge } from "@xyflow/react";
+import { LogCollector } from "@/types/logs";
+import { createLogCollector } from "../log";
 
 export async function executeWorkflow(executionId: string) {
   const execution = await prisma.workflowExecution.findUnique({
@@ -37,6 +39,7 @@ export async function executeWorkflow(executionId: string) {
 
   for (const phase of execution.phases) {
     // TODO: Consume credits
+
     const phaseExecution = await executeWorkflowPhase(
       phase,
       environment,
@@ -143,6 +146,7 @@ async function executeWorkflowPhase(
   environment: IEnvironment,
   edges: Edge[],
 ) {
+  const logCollector = createLogCollector();
   const startedAt = new Date();
   const node = JSON.parse(phase.node) as CustomReactFlowNode;
   setupEnvironmentForPhase(node, environment, edges);
@@ -166,15 +170,20 @@ async function executeWorkflowPhase(
 
   // TODO: decrement user balance (with required credits)
 
-  const success = await executePhase(phase, node, environment);
+  const success = await executePhase(phase, node, environment, logCollector);
   const outputs = environment.phases[node.id]?.outputs;
 
-  await finalizePhase(phase.id, success, outputs);
+  await finalizePhase(phase.id, success, outputs, logCollector);
 
   return { success };
 }
 
-async function finalizePhase(phaseId: string, success: boolean, outputs: any) {
+async function finalizePhase(
+  phaseId: string,
+  success: boolean,
+  outputs: any,
+  logCollector: LogCollector,
+) {
   const finalStatus = success
     ? WorkflowExecutionStatus.COMPLETED
     : WorkflowExecutionStatus.FAILED;
@@ -187,6 +196,17 @@ async function finalizePhase(phaseId: string, success: boolean, outputs: any) {
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      logs: {
+        createMany: {
+          data: logCollector
+            .getAll()
+            .map(({ level: logLevel, message, timestamp }) => ({
+              logLevel,
+              message,
+              timestamp,
+            })),
+        },
+      },
     },
   });
 }
@@ -195,6 +215,7 @@ async function executePhase(
   phase: ExecutionPhase,
   node: CustomReactFlowNode,
   environment: IEnvironment,
+  logCollector: LogCollector,
 ): Promise<boolean> {
   const runFn = ExecuteRegistry[node.data.type];
   if (!runFn) {
@@ -204,7 +225,7 @@ async function executePhase(
     return false;
   }
   const executionEnvironment: IExecutionEnvironment<any> =
-    createExecutionEnvironment(node, environment);
+    createExecutionEnvironment(node, environment, logCollector);
   return await runFn(executionEnvironment);
 }
 
@@ -257,16 +278,21 @@ function setupEnvironmentForPhase(
 function createExecutionEnvironment(
   node: CustomReactFlowNode,
   environment: IEnvironment,
+  logCollector: LogCollector,
 ): IExecutionEnvironment<any> {
   return {
     getInput: (name: string) => environment.phases[node.id]?.inputs[name],
     setOutput: (name: string, value: string) => {
       environment.phases[node.id].outputs[name] = value;
     },
+
     getBrowser: () => environment.browser,
     setBrowser: (browser) => (environment.browser = browser),
+
     getPage: () => environment.page,
     setPage: (page: Page) => (environment.page = page),
+
+    log: logCollector,
   };
 }
 
