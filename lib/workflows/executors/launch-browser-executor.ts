@@ -10,16 +10,15 @@ export async function LaunchBrowserExecutor(
   try {
     const webSiteUrl = environment.getInput("Website URL");
     const browser = await puppeteer.launch({
-      headless: false, // For Testing
+      headless: true,
     });
-
-    await waitFor(5000); // Simulate some work with the browser
-
-    await browser.close();
-
+    environment.setBrowser(browser);
+    const page = await browser.newPage();
+    await page.goto(webSiteUrl);
+    environment.setPage(page);
     return true;
-  } catch (error) {
-    console.error("Error launching browser:", error);
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 }

@@ -23,16 +23,18 @@ export default function ExecutionPage({
       />
 
       <section className="flex h-full overflow-auto">
-        <Suspense fallback={
-          <div className="flex items-center justify-center h-full w-full">
-            <Loader2Icon className="h-10 w-10 animate-spin stroke-primary" />
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-full w-full">
+              <Loader2Icon className="h-10 w-10 animate-spin stroke-primary" />
+            </div>
+          }
+        >
           <ExectionViewWrapper executionId={executionId} />
         </Suspense>
       </section>
     </div>
-  )
+  );
 }
 
 async function ExectionViewWrapper({ executionId }: { executionId: string }) {
@@ -43,7 +45,5 @@ async function ExectionViewWrapper({ executionId }: { executionId: string }) {
     redirect("/workflows");
   }
 
-  return (
-    <ExecutionViewer initialExecution={workflowExecution} />
-  )
+  return <ExecutionViewer initialExecution={workflowExecution} />;
 }

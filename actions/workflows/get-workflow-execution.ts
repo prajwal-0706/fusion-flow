@@ -21,5 +21,5 @@ export async function getWorkflowExecutionWithPhases(executionId: string) {
         },
       },
     },
-  })
+  });
 }

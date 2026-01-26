@@ -1,8 +1,11 @@
-import { Browser } from "puppeteer";
+import { Browser, Page } from "puppeteer";
+
 import { WorkflowTask } from "./workflows";
+import { LogCollector } from "./logs";
 
 export type IEnvironment = {
   browser?: Browser;
+  page?: Page;
   phases: Record<
     string,
     {
@@ -13,5 +16,14 @@ export type IEnvironment = {
 };
 
 export type IExecutionEnvironment<T extends WorkflowTask> = {
-  getInput: (name: T["inputs"][number]["name"]) => string;
+  getInput(name: T["inputs"][number]["name"]): string;
+  setOutput(name: T["outputs"][number]["name"], value: string): void;
+
+  getBrowser(): Browser | undefined;
+  setBrowser(browser: Browser): void;
+
+  setPage(page: Page): void;
+  getPage(): Page | undefined;
+
+  log: LogCollector;
 };
