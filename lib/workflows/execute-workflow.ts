@@ -40,13 +40,12 @@ export async function executeWorkflow(executionId: string) {
   let creditsConsumed = 0;
 
   for (const phase of execution.phases) {
-    // TODO: Consume credits
-
     const phaseExecution = await executeWorkflowPhase(
       phase,
       environment,
       edges,
     );
+    creditsConsumed += phaseExecution.creditsConsumed;
     if (!phaseExecution.success) {
       executionFailed = true;
       break;
@@ -166,18 +165,27 @@ async function executeWorkflowPhase(
   });
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
-  console.log(
-    `Executing phase ${phase.name} of type ${node.data.type}, requires ${creditsRequired} credits`,
+  let success = await decrementCredit(
+    phase.userId,
+    creditsRequired,
+    logCollector,
   );
+  const creditsConsumed = success ? creditsRequired : 0;
 
-  // TODO: decrement user balance (with required credits)
-
-  const success = await executePhase(phase, node, environment, logCollector);
+  if (success) {
+    success = await executePhase(phase, node, environment, logCollector);
+  }
   const outputs = environment.phases[node.id]?.outputs;
 
-  await finalizePhase(phase.id, success, outputs, logCollector);
+  await finalizePhase(
+    phase.id,
+    success,
+    outputs,
+    logCollector,
+    creditsConsumed,
+  );
 
-  return { success };
+  return { success, creditsConsumed };
 }
 
 async function finalizePhase(
@@ -185,6 +193,7 @@ async function finalizePhase(
   success: boolean,
   outputs: any,
   logCollector: LogCollector,
+  creditsConsumed: number,
 ) {
   const finalStatus = success
     ? WorkflowExecutionStatus.COMPLETED
@@ -198,6 +207,7 @@ async function finalizePhase(
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      creditsConsumed,
       logs: {
         createMany: {
           data: logCollector
@@ -303,5 +313,32 @@ async function cleanUpEnvironment(environment: IEnvironment) {
     await environment.browser.close().catch((err) => {
       console.error("cannot close browser, reason:", err);
     });
+  }
+}
+
+async function decrementCredit(
+  userId: string,
+  amount: number,
+  logCollector: LogCollector,
+) {
+  try {
+    await prisma.userBalance.update({
+      where: { userId, credits: { gte: amount } },
+      data: {
+        credits: {
+          decrement: amount,
+        },
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error(
+      "Failed to decrement credits for user",
+      userId,
+      "amount",
+      amount,
+    );
+    logCollector.error("insufficient balance to execute the task");
+    return false;
   }
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Menu } from "lucide-react";
 
 import { ROUTES } from "@/lib/constants";
 import Logo from "../globals/logo";
@@ -14,7 +15,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../ui/sheet";
-import { Menu } from "lucide-react";
+import UserAvailableBalanceBadge from "./user-available-balance-badge";
 
 export default function DesktopSidebar() {
   const pathName = usePathname();
@@ -28,7 +29,9 @@ export default function DesktopSidebar() {
       <div className="flex items-center justify-center gap-2 border-b-[1px] border-separate p-4">
         <Logo />
       </div>
-      {/* TODO: Add Credits Display.. */}
+      <div className="p-2">
+        <UserAvailableBalanceBadge />
+      </div>
       <div className="flex flex-col p-2 gap-y-2">
         {ROUTES.map(({ href, icon: Icon, label }) => (
           <Link
@@ -70,6 +73,7 @@ export function MobileSidebar() {
           >
             <SheetHeader>
               <Logo />
+              <UserAvailableBalanceBadge />
             </SheetHeader>
             <div className="flex flex-col gap-1">
               {ROUTES.map(({ href, icon: Icon, label }) => (

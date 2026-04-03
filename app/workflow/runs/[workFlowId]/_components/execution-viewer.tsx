@@ -10,7 +10,7 @@ import {
   LucideIcon,
   WorkflowIcon,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, set } from "date-fns";
 import { useEffect, useState } from "react";
 
 import { getWorkflowExecutionWithPhases } from "@/actions/workflows/get-workflow-execution";
@@ -45,6 +45,7 @@ import {
 import { cn } from "@/lib/utils";
 import { LogLevel } from "@/types/logs";
 import PhaseStatusBadge from "./phase-status-badge";
+import CountUpWrapper from "@/components/globals/countup-wrapper";
 
 interface ExecutionViewerProps {
   initialExecution: Awaited<ReturnType<typeof getWorkflowExecutionWithPhases>>;
@@ -60,7 +61,10 @@ export default function ExecutionViewer({
     initialData: initialExecution,
     queryFn: () => getWorkflowExecutionWithPhases(initialExecution?.id ?? ""),
     refetchInterval: (q) =>
-      q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
+      q.state.data?.status === WorkflowExecutionStatus.RUNNING ||
+      q.state.data?.status === WorkflowExecutionStatus.PENDING
+        ? 1000
+        : false,
   });
 
   const phaseDetails = useQuery({
@@ -85,7 +89,7 @@ export default function ExecutionViewer({
       a.completedAt! > b.completedAt! ? -1 : 1,
     )[0];
     setSelectedPhase(phaseToSelect?.id);
-  }, [query.data?.phases, isRunning, selectedPhase]);
+  }, [query.data?.phases, isRunning, setSelectedPhase]);
 
   const duration = datesToDurationString(
     query.data?.completedAt,
@@ -129,7 +133,7 @@ export default function ExecutionViewer({
           <ExecutionLabel
             icon={CoinsIcon}
             label="Credits Consumed"
-            value={creditsConsumed}
+            value={<CountUpWrapper value={creditsConsumed} />}
           />
           <Separator />
           <div className="flex justify-center items-center py-2 px-4">
@@ -163,7 +167,6 @@ export default function ExecutionViewer({
         </div>
       </aside>
       <div className="flex w-full h-full">
-        {phaseDetails.isLoading && <CustomLoading />}
         {isRunning && (
           <div className="flex items-center flex-col gap-2 justify-center h-full w-full">
             <p className="font-bold">Run is in Progress, please wait...</p>
@@ -180,6 +183,7 @@ export default function ExecutionViewer({
             </div>
           </div>
         )}
+        {!isRunning && phaseDetails.isLoading && <CustomLoading />}
         {!isRunning && selectedPhase && phaseDetails.data && (
           <div className="flex flex-col py-4 container gap-4 overflow-auto">
             <div className="flex gap-2 items-center">
@@ -188,7 +192,7 @@ export default function ExecutionViewer({
                   <CoinsIcon size={18} className="stroke-muted-foreground" />
                   <span>Credits</span>
                 </div>
-                <span>TODO</span>
+                <span>{phaseDetails.data.creditsConsumed}</span>
               </Badge>
               <Badge variant="outline" className="space-x-4 py-1">
                 <div className="flex gap-1 items-center">
