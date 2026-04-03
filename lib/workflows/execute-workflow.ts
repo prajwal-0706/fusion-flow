@@ -5,14 +5,16 @@ import { Page } from "puppeteer";
 import { Edge } from "@xyflow/react";
 
 import prisma from "../prisma";
+import { ExecutionPhase } from "@prisma/client";
+
 import { WorkflowExecutionStatus } from "@/types/workflows";
 import { CustomReactFlowNode } from "@/types/custom-node";
-import { IEnvironment, IExecutionEnvironment } from "@/types/executor";
 import { TaskParamType } from "@/types/task";
-import { ExecutionPhase } from "@prisma/client";
+import { LogCollector } from "@/types/logs";
+import { IEnvironment, IExecutionEnvironment } from "@/types/executor";
+
 import { TaskRegistry } from "./tasks/registry";
 import { ExecuteRegistry } from "./executors/registry";
-import { LogCollector } from "@/types/logs";
 import { createLogCollector } from "../log";
 
 export async function executeWorkflow(executionId: string) {
