@@ -8,12 +8,15 @@ import { Button } from "@/components/ui/button";
 import SaveBtn from "./save-btn";
 import ExecuteBtn from "./execute-btn";
 import NavigationTab from "./navigation-tab";
+import PublishBtn from "./publish-btn";
+import UnpublishBtn from "./un-publish-btn";
 
 interface TopbarProps {
   title: string;
   subtitle?: string;
   workflowId: string;
   hideActions?: boolean;
+  isPublished?: boolean;
 }
 
 export default function Topbar({
@@ -21,6 +24,7 @@ export default function Topbar({
   subtitle,
   workflowId,
   hideActions = false,
+  isPublished = false,
 }: TopbarProps) {
   const router = useRouter();
   return (
@@ -45,7 +49,13 @@ export default function Topbar({
         {!hideActions && (
           <>
             <ExecuteBtn workflowId={workflowId} />
-            <SaveBtn workflowId={workflowId} />
+            {isPublished && <UnpublishBtn workflowId={workflowId} />}
+            {!isPublished && (
+              <>
+                <SaveBtn workflowId={workflowId} />
+                <PublishBtn workflowId={workflowId} />
+              </>
+            )}
           </>
         )}
       </div>
