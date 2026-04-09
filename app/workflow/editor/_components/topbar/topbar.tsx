@@ -7,6 +7,7 @@ import TooltipWrapper from "@/components/globals/tooltip-wrapper";
 import { Button } from "@/components/ui/button";
 import SaveBtn from "./save-btn";
 import ExecuteBtn from "./execute-btn";
+import NavigationTab from "./navigation-tab";
 
 interface TopbarProps {
   title: string;
@@ -15,7 +16,12 @@ interface TopbarProps {
   hideActions?: boolean;
 }
 
-export default function Topbar({ title, subtitle, workflowId, hideActions = false }: TopbarProps) {
+export default function Topbar({
+  title,
+  subtitle,
+  workflowId,
+  hideActions = false,
+}: TopbarProps) {
   const router = useRouter();
   return (
     <header className="flex p-2 border-b-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10">
@@ -34,6 +40,7 @@ export default function Topbar({ title, subtitle, workflowId, hideActions = fals
           )}
         </div>
       </div>
+      <NavigationTab workflowId={workflowId} />
       <div className="flex gap-1 flex-1 justify-end">
         {!hideActions && (
           <>
