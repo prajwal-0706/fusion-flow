@@ -5,8 +5,11 @@ import { Workflow } from "@prisma/client";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
+  CoinsIcon,
+  CornerDownRightIcon,
   FileTextIcon,
   MoreVerticalIcon,
+  MoveRightIcon,
   PlayIcon,
   ShuffleIcon,
   TrashIcon,
@@ -26,6 +29,8 @@ import {
 import TooltipWrapper from "@/components/globals/tooltip-wrapper";
 import DeleteWorkflowDialog from "./delete-workflow-dialog";
 import RunBtn from "./run-btn";
+import SchedulerDialog from "./scheduler-dialog";
+import { Badge } from "@/components/ui/badge";
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -65,6 +70,12 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
                 </span>
               )}
             </h3>
+            <SchedulerSection
+              isDraft={isDraft}
+              creditsCost={workflow.creditsCost}
+              workflowId={workflow.id}
+              cron={workflow.cron}
+            />
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -134,5 +145,42 @@ function WorkflowActions({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
+  );
+}
+
+function SchedulerSection({
+  isDraft,
+  creditsCost,
+  workflowId,
+  cron,
+}: {
+  isDraft?: boolean;
+  creditsCost: number;
+  workflowId: string;
+  cron: string | null;
+}) {
+  if (isDraft) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <CornerDownRightIcon className="h-4 w-4 text-muted-foreground" />
+      <SchedulerDialog
+        key={`${cron}-${workflowId}`}
+        cron={cron}
+        workflowId={workflowId}
+      />
+      <MoveRightIcon className="h-4 w-4 text-muted-foreground" />
+      <TooltipWrapper content="Credit Consumption for full run">
+        <div className="flex items-center gap-3">
+          <Badge
+            variant="outline"
+            className="space-x-2 text-muted-foreground rounded-sm"
+          >
+            <CoinsIcon className="h-4 w-4" />
+            <span className="text-sm font-medium">{creditsCost}</span>
+          </Badge>
+        </div>
+      </TooltipWrapper>
+    </div>
   );
 }
