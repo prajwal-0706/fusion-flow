@@ -17,12 +17,17 @@ model Workflow {
   name        String
   description String?
 
-  definition String
-  status     String
+  definition    String
+  executionPlan String?
+  creditsCost   Int     @default(0)
+
+  status String
+  cron   String?
 
   lastRunAt     DateTime?
   lastRunId     String?
   lastRunStatus String?
+  nextRunAt     DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -78,4 +83,9 @@ model ExecutionLog {
 
   executionPhaseId String
   executionPhase   ExecutionPhase @relation(fields: [executionPhaseId], references: [id], onDelete: Cascade)
+}
+
+model UserBalance {
+  userId  String @id
+  credits Int    @default(0)
 }
