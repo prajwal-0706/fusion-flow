@@ -83,12 +83,12 @@ export default function ExecutionViewer({
         a.startedAt! > b.startedAt! ? -1 : 1,
       )[0];
       setSelectedPhase(phaseToSelect?.id);
+    } else {
+      const phaseToSelect = phases.toSorted((a, b) =>
+        a.completedAt! > b.completedAt! ? -1 : 1,
+      )[0];
+      setSelectedPhase(phaseToSelect?.id);
     }
-
-    const phaseToSelect = phases.toSorted((a, b) =>
-      a.completedAt! > b.completedAt! ? -1 : 1,
-    )[0];
-    setSelectedPhase(phaseToSelect?.id);
   }, [query.data?.phases, isRunning, setSelectedPhase]);
 
   const duration = datesToDurationString(
