@@ -34,7 +34,9 @@ import DeleteWorkflowDialog from "./delete-workflow-dialog";
 import RunBtn from "./run-btn";
 import SchedulerDialog from "./scheduler-dialog";
 import { Badge } from "@/components/ui/badge";
-import ExecutionStatusIndicator from "@/app/workflow/runs/_components/execution-status-indicator";
+import ExecutionStatusIndicator, {
+  ExecutionStatusLabel,
+} from "@/app/workflow/runs/_components/execution-status-indicator";
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -210,7 +212,9 @@ function LastRunDetails({ workflow }: { workflow: Workflow }) {
             <ExecutionStatusIndicator
               status={lastRunStatus as WorkflowExecutionStatus}
             />
-            <span>{lastRunStatus}</span>
+            <ExecutionStatusLabel
+              status={lastRunStatus as WorkflowExecutionStatus}
+            />
             <span>{formattedStartedAt}</span>
             <ChevronRightIcon
               size={14}
