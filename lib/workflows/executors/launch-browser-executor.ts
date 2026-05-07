@@ -1,7 +1,6 @@
 import puppeteer from "puppeteer";
 
 import { IExecutionEnvironment } from "@/types/executor";
-import { waitFor } from "@/lib/helpers/wait-for";
 import { LaunchBrowserTask } from "../tasks/launch-browser";
 
 export async function LaunchBrowserExecutor(

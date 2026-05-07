@@ -1,0 +1,41 @@
+"use server";
+
+import { auth } from "@clerk/nextjs/server";
+
+import prisma from "@/lib/prisma";
+import {
+  duplicateWorkflowSchema,
+  DuplicateWorkflowSchemaType,
+} from "@/schema/workflows";
+import { WorkflowStatus } from "@/types/workflows";
+import { revalidatePath } from "next/cache";
+
+export async function duplicateWorkflow(form: DuplicateWorkflowSchemaType) {
+  const { success, data } = duplicateWorkflowSchema.safeParse(form);
+
+  if (!success) throw new Error("Invalid form data");
+
+  const { userId } = auth();
+
+  if (!userId) throw new Error("Unauthenticated");
+
+  const sourceWorkflow = await prisma.workflow.findUnique({
+    where: { id: data.workflowId, userId },
+  });
+
+  if (!sourceWorkflow) throw new Error("Workflow not found");
+
+  const duplicatedWorkflow = await prisma.workflow.create({
+    data: {
+      userId,
+      name: data.name,
+      description: data.description,
+      status: WorkflowStatus.DRAFT,
+      definition: sourceWorkflow.definition,
+    },
+  });
+
+  if (!duplicatedWorkflow) throw new Error("Failed to duplicate workflow");
+
+  revalidatePath("/workflows");
+}
