@@ -17,5 +17,5 @@ export default function CountUpWrapper({
 
   if (!mounted) return "-";
 
-  return <CountUp duration={duration} preserveValue end={value} decimals={0} />;
+  return <CountUp preserveValue end={value} decimals={0} />;
 }

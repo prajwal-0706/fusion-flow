@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Workflow } from "@prisma/client";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { formatDistanceToNow, format } from "date-fns";
 import {
+  ChevronRightIcon,
+  ClockIcon,
   CoinsIcon,
   CornerDownRightIcon,
   FileTextIcon,
@@ -15,8 +17,9 @@ import {
   TrashIcon,
 } from "lucide-react";
 
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { WorkflowStatus } from "@/types/workflows";
+import { WorkflowExecutionStatus, WorkflowStatus } from "@/types/workflows";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -31,6 +34,10 @@ import DeleteWorkflowDialog from "./delete-workflow-dialog";
 import RunBtn from "./run-btn";
 import SchedulerDialog from "./scheduler-dialog";
 import { Badge } from "@/components/ui/badge";
+import ExecutionStatusIndicator, {
+  ExecutionStatusLabel,
+} from "@/app/workflow/runs/_components/execution-status-indicator";
+import DuplicateWorkflowDialog from "./duplicate-workflow-dialog";
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -41,7 +48,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
 
   return (
-    <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-primary/30">
+    <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-primary/30 group/card">
       <CardContent className="p-4 flex items-center justify-between h-[100px]">
         <div className="flex items-center justify-end space-x-3">
           <div
@@ -58,17 +65,20 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           </div>
           <div className="">
             <h3 className="text-base font-bold text-muted-foreground flex items-center">
-              <Link
-                className="flex items-center hover:underline"
-                href={`/workflow/editor/${workflow.id}`}
-              >
-                {workflow.name}
-              </Link>
+              <TooltipWrapper content={workflow.description}>
+                <Link
+                  className="flex items-center hover:underline"
+                  href={`/workflow/editor/${workflow.id}`}
+                >
+                  {workflow.name}
+                </Link>
+              </TooltipWrapper>
               {isDraft && (
                 <span className="text-xs ml-2 px-2 py-0.5 font-medium bg-yellow-100 text-yellow-800 rounded-full">
                   Draft
                 </span>
               )}
+              <DuplicateWorkflowDialog initialValues={workflow} />
             </h3>
             <SchedulerSection
               isDraft={isDraft}
@@ -99,6 +109,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           />
         </div>
       </CardContent>
+      <LastRunDetails workflow={workflow} />
     </Card>
   );
 }
@@ -181,6 +192,49 @@ function SchedulerSection({
           </Badge>
         </div>
       </TooltipWrapper>
+    </div>
+  );
+}
+
+function LastRunDetails({ workflow }: { workflow: Workflow }) {
+  const isDraft = workflow.status === WorkflowStatus.DRAFT;
+  if (isDraft) return null;
+
+  const { id, lastRunAt, lastRunStatus, lastRunId, nextRunAt } = workflow;
+  const formattedStartedAt =
+    lastRunAt && formatDistanceToNow(lastRunAt, { addSuffix: true });
+  const nextSchedule = nextRunAt && format(nextRunAt, "dd-MM-yyyy hh:mm a");
+  return (
+    <div className="bg-primary/5 px-4 py-2 flex items-center justify-between text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm">
+        {lastRunAt && (
+          <Link
+            href={`/workflow/runs/${id}/${lastRunId}`}
+            className="flex items-center gap-2 text-sm group"
+          >
+            <span>Last Run: </span>
+            <ExecutionStatusIndicator
+              status={lastRunStatus as WorkflowExecutionStatus}
+            />
+            <ExecutionStatusLabel
+              status={lastRunStatus as WorkflowExecutionStatus}
+            />
+            <span>{formattedStartedAt}</span>
+            <ChevronRightIcon
+              size={14}
+              className="group-hover:translate-x-[3px] transition"
+            />
+          </Link>
+        )}
+        {!lastRunAt && <p>No runs yet, execute the workflow to see results.</p>}
+      </div>
+      {nextRunAt && (
+        <div className="flex items-center gap-2 text-sm">
+          <ClockIcon size={14} />
+          <span>Next Run: </span>
+          <span>{nextSchedule}</span>
+        </div>
+      )}
     </div>
   );
 }
