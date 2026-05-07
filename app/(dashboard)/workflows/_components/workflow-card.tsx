@@ -37,6 +37,7 @@ import { Badge } from "@/components/ui/badge";
 import ExecutionStatusIndicator, {
   ExecutionStatusLabel,
 } from "@/app/workflow/runs/_components/execution-status-indicator";
+import DuplicateWorkflowDialog from "./duplicate-workflow-dialog";
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -47,7 +48,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
 
   return (
-    <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-primary/30">
+    <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-primary/30 group/card">
       <CardContent className="p-4 flex items-center justify-between h-[100px]">
         <div className="flex items-center justify-end space-x-3">
           <div
@@ -64,17 +65,20 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           </div>
           <div className="">
             <h3 className="text-base font-bold text-muted-foreground flex items-center">
-              <Link
-                className="flex items-center hover:underline"
-                href={`/workflow/editor/${workflow.id}`}
-              >
-                {workflow.name}
-              </Link>
+              <TooltipWrapper content={workflow.description}>
+                <Link
+                  className="flex items-center hover:underline"
+                  href={`/workflow/editor/${workflow.id}`}
+                >
+                  {workflow.name}
+                </Link>
+              </TooltipWrapper>
               {isDraft && (
                 <span className="text-xs ml-2 px-2 py-0.5 font-medium bg-yellow-100 text-yellow-800 rounded-full">
                   Draft
                 </span>
               )}
+              <DuplicateWorkflowDialog initialValues={workflow} />
             </h3>
             <SchedulerSection
               isDraft={isDraft}
