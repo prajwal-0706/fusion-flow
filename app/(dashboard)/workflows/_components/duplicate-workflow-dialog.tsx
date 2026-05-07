@@ -87,7 +87,7 @@ export default function DuplicateWorkflowDialog({
       </DialogTrigger>
       <DialogContent className="">
         <CustomDialogHeader icon={Layers2Icon} title="Duplicate Workflow" />
-        <div className="p6">
+        <div className="p-2">
           <Form {...form}>
             <form
               className="space-y-8 w-full"

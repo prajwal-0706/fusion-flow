@@ -51,7 +51,7 @@ export async function GET(req: Request) {
   });
 
   if (!workflow) {
-    return Response.json({ error: "bad request" }, { status: 404 });
+    return Response.json({ error: "bad request" }, { status: 400 });
   }
 
   let executionPlan: WorkflowExecutionPlan;
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
     return Response.json({ error: "bad request" }, { status: 400 });
   }
 
-  if (!executionPlan) {
+  if (!executionPlan || !workflow.cron) {
     return Response.json({ error: "bad request" }, { status: 400 });
   }
 

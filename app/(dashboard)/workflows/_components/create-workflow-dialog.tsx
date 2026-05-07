@@ -74,7 +74,7 @@ export default function CreateWorkflowDialog({
           title="Create Workflow"
           subtitle="Start building your workflow"
         />
-        <div className="p6">
+        <div className="p-2">
           <Form {...form}>
             <form
               className="space-y-8 w-full"
