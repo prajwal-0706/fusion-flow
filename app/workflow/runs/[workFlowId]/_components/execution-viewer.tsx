@@ -61,14 +61,16 @@ export default function ExecutionViewer({
     initialData: initialExecution,
     queryFn: () => getWorkflowExecutionWithPhases(initialExecution?.id ?? ""),
     refetchInterval: (q) =>
-      q.state.data?.status === WorkflowExecutionStatus.RUNNING ||
-      q.state.data?.status === WorkflowExecutionStatus.PENDING
+      [
+        WorkflowExecutionStatus.RUNNING,
+        WorkflowExecutionStatus.PENDING,
+      ].includes(q.state.data?.status as WorkflowExecutionStatus)
         ? 1000
         : false,
   });
 
   const phaseDetails = useQuery({
-    queryKey: ["phaseDetails", selectedPhase],
+    queryKey: ["phaseDetails", selectedPhase, query.data?.status],
     enabled: !!selectedPhase,
     queryFn: () => getWorkflowPhaseDetails(selectedPhase!),
   });
