@@ -16,8 +16,16 @@ export default function TaskMenu() {
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["extraction"]}
+        defaultValue={["interactions", "extraction"]}
       >
+        <AccordionItem value="interactions">
+          <AccordionTrigger className="font-bold">
+            User Interactions
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.FILL_INPUT} />
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="extraction">
           <AccordionTrigger className="font-bold">
             Data Extraction
@@ -37,7 +45,7 @@ function TaskMenuBtn({ taskType }: { taskType: TaskType }) {
 
   const onDragStart = (
     event: React.DragEvent<HTMLButtonElement>,
-    type: TaskType
+    type: TaskType,
   ) => {
     event.dataTransfer.setData("application/reactflow", type);
     event.dataTransfer.effectAllowed = "move";
