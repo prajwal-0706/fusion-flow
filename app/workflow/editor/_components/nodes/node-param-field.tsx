@@ -3,10 +3,11 @@
 import { useReactFlow } from "@xyflow/react";
 import { useCallback } from "react";
 
-import StringParam from "./param/string-param";
 import { TaskParams, TaskParamType } from "@/types/task";
 import { CustomReactFlowNode } from "@/types/custom-node";
+import StringParam from "./param/string-param";
 import BrowserInstanceParam from "./param/browser-instance-param";
+import SelectParam from "./param/select-param";
 
 export default function NodeParamField({
   param,
@@ -31,7 +32,7 @@ export default function NodeParamField({
         },
       });
     },
-    [node, nodeId, param.name, updateNodeData]
+    [node, nodeId, param.name, updateNodeData],
   );
 
   if (!node) return null;
@@ -51,6 +52,14 @@ export default function NodeParamField({
         <BrowserInstanceParam
           param={param}
           value={""}
+          updateNodeParamValue={updateNodeParamValue}
+        />
+      );
+    case TaskParamType.SELECT:
+      return (
+        <SelectParam
+          param={param}
+          value={value}
           updateNodeParamValue={updateNodeParamValue}
         />
       );

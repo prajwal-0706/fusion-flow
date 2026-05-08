@@ -6,6 +6,7 @@ import { PageToHtmlTask } from "./page-to-html";
 import { ExtractTextFromElementTask } from "./extract-text-from-element";
 import { FillInputTask } from "./fill-input";
 import { ClickElementTask } from "./click-element";
+import { WaitForElementTask } from "./wait-for-element";
 
 type Registry = {
   [key in TaskType]: WorkflowTask & {
@@ -19,4 +20,5 @@ export const TaskRegistry: Registry = {
   EXTRACT_TEXT_FROM_ELEMENT: ExtractTextFromElementTask,
   FILL_INPUT: FillInputTask,
   CLICK_ELEMENT: ClickElementTask,
+  WAIT_FOR_ELEMENT: WaitForElementTask,
 };
