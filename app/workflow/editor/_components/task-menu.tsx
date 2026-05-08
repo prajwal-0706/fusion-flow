@@ -16,8 +16,17 @@ export default function TaskMenu() {
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["extraction"]}
+        defaultValue={["interactions", "extraction", "timing", "results"]}
       >
+        <AccordionItem value="interactions">
+          <AccordionTrigger className="font-bold">
+            User Interactions
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.FILL_INPUT} />
+            <TaskMenuBtn taskType={TaskType.CLICK_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="extraction">
           <AccordionTrigger className="font-bold">
             Data Extraction
@@ -25,6 +34,22 @@ export default function TaskMenu() {
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuBtn taskType={TaskType.PAGE_TO_HTML} />
             <TaskMenuBtn taskType={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="timing">
+          <AccordionTrigger className="font-bold">
+            Timing & Control
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.WAIT_FOR_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="results">
+          <AccordionTrigger className="font-bold">
+            Result Delivery
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.DELIVER_VIA_WEBHOOK} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -37,7 +62,7 @@ function TaskMenuBtn({ taskType }: { taskType: TaskType }) {
 
   const onDragStart = (
     event: React.DragEvent<HTMLButtonElement>,
-    type: TaskType
+    type: TaskType,
   ) => {
     event.dataTransfer.setData("application/reactflow", type);
     event.dataTransfer.effectAllowed = "move";

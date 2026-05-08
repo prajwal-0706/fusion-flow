@@ -20,7 +20,6 @@ export async function updateWorkflowCron({
 
   try {
     const interval = CronExpressionParser.parse(cron);
-    console.log("Parsed cron interval:", interval);
     await prisma.workflow.update({
       where: { id, userId },
       data: {
