@@ -8,6 +8,7 @@ import { ExtractTextFromElementExecutor } from "./extract-text-from-element-exec
 import { FillInputExecutor } from "./fill-input-executor";
 import { ClickElementExecutor } from "./click-element-executor";
 import { WaitForElementExecutor } from "./wait-for-element-executor";
+import { DeliverViaWebhookExecutor } from "./deliver-via-webhook-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (
   environment: IExecutionEnvironment<T>,
@@ -24,4 +25,5 @@ export const ExecuteRegistry: ExecuteRegistryType = {
   FILL_INPUT: FillInputExecutor,
   CLICK_ELEMENT: ClickElementExecutor,
   WAIT_FOR_ELEMENT: WaitForElementExecutor,
+  DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
 };
